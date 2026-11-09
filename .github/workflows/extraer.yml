@@ -1,6 +1,9 @@
 name: Extraer ZIP
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/**'
 permissions:
   contents: write
 jobs:

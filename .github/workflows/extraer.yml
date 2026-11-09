@@ -4,10 +4,6 @@ on:
   push:
     paths:
       - 'Flow-Apps.zip'
-  workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/**'
 permissions:
   contents: write
 jobs:

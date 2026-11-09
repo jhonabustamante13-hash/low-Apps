@@ -1,0 +1,46 @@
+name: Build MusicFlow
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'MusicFlow/**'
+      - '.github/workflows/build-musicflow.yml'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Compilar APK
+        working-directory: MusicFlow
+        run: gradle assembleDebug --no-daemon --stacktrace
+      - name: Comprobar que el APK existe
+        run: |
+          APK=$(find MusicFlow/app/build/outputs/apk/debug -name '*.apk' | head -n 1)
+          test -f "$APK"
+          mkdir -p out
+          cp "$APK" out/MusicFlow.apk
+          ls -l out
+      - name: Publicar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MusicFlow-apk
+          path: out/MusicFlow.apk
+      - name: Crear ZIP del código fuente
+        run: zip -r out/MusicFlow-source.zip MusicFlow -x '*/build/*' '*/.gradle/*'
+      - name: Publicar ZIP del código fuente
+        uses: actions/upload-artifact@v4
+        with:
+          name: MusicFlow-source
+          path: out/MusicFlow-source.zip

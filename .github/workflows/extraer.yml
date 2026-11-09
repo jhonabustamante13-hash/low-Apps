@@ -11,14 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          if [ -d Flow-Apps ]; then
-            rm -rf Flow-Apps/.github
-            cp -a Flow-Apps/. .
-            rm -rf Flow-Apps
-          fi
+      - name: Extraer y guardar
+        run: |
+          unzip -o Flow-Apps.zip
+          rm Flow-Apps.zip
           git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.email "github-actions@users.noreply.github.com"
           git add -A
-          git commit -m "Subir carpetas" || true
+          git commit -m "Añadir código de Flow-Apps"
           git push
